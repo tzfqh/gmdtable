@@ -1,0 +1,27 @@
+{
+  "name": "vue-screenfull-draft",
+  "version": "1.0.0",
+  "description": "It is a draft.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lilith-fe/vue-screenfull-draft.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lilith-fe/vue-screenfull-draft/issues"
+  },
+  "homepage": "https://github.com/lilith-fe/vue-screenfull-draft#readme",
+  "devDependencies": {
+    "rollup": "^2.77.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-vue": "^6.0.0",
+    "vue": "^3.2.37",
+    "vuepress": "^2.0.0-beta.49"
+  }
+}
