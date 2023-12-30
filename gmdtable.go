@@ -7,6 +7,10 @@ import (
 
 // ConvertToMDTable takes a slice of maps and returns a string representing a Markdown table.
 func ConvertToMDTable(headers map[string]string, data []map[string]interface{}) (string, error) {
+	if len(data) == 0 {
+		return "", fmt.Errorf("the data slice is empty")
+	}
+
 	var markdownTable strings.Builder
 
 	// Write table headers
