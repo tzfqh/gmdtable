@@ -39,7 +39,7 @@ func main() {
   {"key1": "value2", "key2": 456},
  }
 
- markdownTable, err := gmdtable.ConvertToMDTable(headers, data)
+ markdownTable, err := gmdtable.Convert(headers, data)
  if err != nil {
   fmt.Println("Error:", err)
   return
