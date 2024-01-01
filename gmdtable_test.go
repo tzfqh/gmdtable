@@ -6,10 +6,10 @@ import (
 )
 
 func TestConvertToMDTable(t *testing.T) {
-	headers := map[string]string{"key1": "title1", "key2": "title2"}
+	headers := []string{"title1", "title2"}
 	data := []map[string]interface{}{
-		{"key1": "value1", "key2": 123},
-		{"key1": "value2", "key2": 456},
+		{"title1": "value1", "title2": 123},
+		{"title1": "value2", "title2": 456},
 	}
 
 	want := strings.TrimSpace(`
