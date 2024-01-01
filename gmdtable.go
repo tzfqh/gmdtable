@@ -16,15 +16,12 @@ func ConvertToMDTable(headers []string, data []map[string]interface{}) (string, 
 	// Write table headers
 	markdownTable.WriteString("| ")
 	headersLen := len(headers)
-	// headersIndex := 0
 	for headersIndex, title := range headers {
-		// markdownTable.WriteString(title + " | ")
 		if headersLen == (headersIndex + 1) {
 			markdownTable.WriteString(title + " |")
 		} else {
 			markdownTable.WriteString(title + " | ")
 		}
-		// headersIndex++
 	}
 	markdownTable.WriteString("\n")
 
