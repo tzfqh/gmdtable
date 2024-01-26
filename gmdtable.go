@@ -12,6 +12,7 @@ func Convert(headers []string, data []map[string]interface{}) (string, error) {
 	}
 
 	var markdownTable strings.Builder
+	var tableStr string
 
 	// Write table headers
 	markdownTable.WriteString("| ")
@@ -48,5 +49,7 @@ func Convert(headers []string, data []map[string]interface{}) (string, error) {
 		markdownTable.WriteString("\n")
 	}
 
-	return markdownTable.String(), nil
+	tableStr = strings.TrimSpace(markdownTable.String())
+
+	return tableStr, nil
 }
