@@ -24,28 +24,28 @@ Here is a simple example of how to use `gmdtable`:
 package main
 
 import (
-	"fmt"
-	"github.com/tzfqh/gmdtable"
+ "fmt"
+ "github.com/tzfqh/gmdtable"
 )
 
 func main() {
-	headers := map[string]string{
-		"key1": "Title 1",
-		"key2": "Title 2",
-	}
+ headers := map[string]string{
+  "key1": "Title 1",
+  "key2": "Title 2",
+ }
 
-	data := []map[string]interface{}{
-		{"key1": "value1", "key2": 123},
-		{"key1": "value2", "key2": 456},
-	}
+ data := []map[string]interface{}{
+  {"key1": "value1", "key2": 123},
+  {"key1": "value2", "key2": 456},
+ }
 
-	markdownTable, err := gmdtable.ConvertToMDTable(headers, data)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
+ markdownTable, err := gmdtable.ConvertToMDTable(headers, data)
+ if err != nil {
+  fmt.Println("Error:", err)
+  return
+ }
 
-	fmt.Println(markdownTable)
+ fmt.Println(markdownTable)
 }
 ```
 
