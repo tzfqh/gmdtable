@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestConvertToMDTable(t *testing.T) {
+func TestConvert(t *testing.T) {
 	headers := []string{"title1", "title2"}
 	data := []map[string]interface{}{
 		{"title1": "value1", "title2": 123},
@@ -19,7 +19,7 @@ func TestConvertToMDTable(t *testing.T) {
 | value2 | 456 |
 `)
 
-	got, err := ConvertToMDTable(headers, data)
+	got, err := Convert(headers, data)
 	if err != nil {
 		t.Errorf("ConvertToMarkdown returned an unexpected error: %v", err)
 	}
