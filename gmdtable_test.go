@@ -24,7 +24,7 @@ func TestConvert(t *testing.T) {
 		t.Errorf("ConvertToMarkdown returned an unexpected error: %v", err)
 	}
 
-	if strings.TrimSpace(got) != want {
+	if got != want {
 		t.Errorf("ConvertToMarkdown output was incorrect, got:\n%s\nwant:\n%s", got, want)
 	}
 }
