@@ -26,24 +26,24 @@ Here is a simple example of how to use `gmdtable`:
 package main
 
 import (
-	"fmt"
-	"github.com/tzfqh/gmdtable"
+ "fmt"
+ "github.com/tzfqh/gmdtable"
 )
 
 func main() {
-	headers := []string{"ID", "Name", "Age"}
-	data := []map[string]interface{}{
-		{"ID": 1, "Name": "John Doe", "Age": 30},
-		{"ID": 2, "Name": "Jane Smith", "Age": 25},
-	}
+ headers := []string{"ID", "Name", "Age"}
+ data := []map[string]interface{}{
+  {"ID": 1, "Name": "John Doe", "Age": 30},
+  {"ID": 2, "Name": "Jane Smith", "Age": 25},
+ }
 
-	table, err := gmdtable.Convert(headers, data)
-	if err != nil {
-		fmt.Println("Error generating table:", err)
-		return
-	}
+ table, err := gmdtable.Convert(headers, data)
+ if err != nil {
+  fmt.Println("Error generating table:", err)
+  return
+ }
 
-	fmt.Println(table)
+ fmt.Println(table)
 }
 ```
 
