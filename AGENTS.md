@@ -1,92 +1,94 @@
-# Contributor guide
+# AGENTS.md
 
-## Repository scope
+Guidance for automated coding agents working in `gmdtable`.
 
-`gmdtable` is a Go 1.19 library that converts ordered headers and map-backed row data into a Markdown table. It has no command-line executable, server, database, runtime configuration, or generated source. Keep changes focused on the library's public behavior and its tests.
+## Package purpose and contract
 
-## Repository map
+`gmdtable` is a Go 1.19 module that converts ordered headers and map-backed row data into a Markdown
+table. `go.mod` owns the public module path `github.com/tzfqh/gmdtable`. The module-root `gmdtable`
+package exposes `Convert(headers []string, data []map[string]interface{}) (string, error)`.
 
-```text
-.
-├── gmdtable.go             # Package implementation and public Convert API
-├── gmdtable_test.go        # Unit tests for package behavior
-├── go.mod                  # Module path and minimum Go language version
-├── README.md               # Installation, usage, and public documentation
-├── .github/workflows/
-│   └── test.yml            # Push CI: dependency download, build, and tests
-├── .vscode/settings.json   # Optional editor window-title setting
-├── .gitignore              # Repository ignore rules; currently empty
-└── LICENSE                 # MIT license
-```
+Preserve header-defined column order, default `fmt` value formatting, exact Markdown spacing, the
+`<nil>` representation for missing keys, structural cell escaping, and empty-input errors unless a
+deliberate public behavior change is approved. Website code must not be imported by the public package,
+and website changes must not silently change runtime behavior.
 
-The repository root is the package root. There are no internal packages, vendored dependencies, generated directories, or committed build artifacts.
+Public API changes require aligned implementation, GoDoc, behavior tests, executable examples,
+`examples/basic`, README usage, website examples, and generated API documentation.
 
-## Entry point and startup flow
+## Project structure
 
-The consumer entry point is:
+- `doc.go`, `gmdtable.go`: public package documentation and implementation.
+- `gmdtable_test.go`, `example_test.go`: external-package behavior and executable documentation tests.
+- `examples/basic`: runnable consumer-style example.
+- `cmd/sitegen`: Go CLI with `build`, `validate`, and `preview` commands.
+- `site.config.json`: website identity, metadata, theme palette, PWA identity, and page definitions.
+- `internal/site/config.go`: strict configuration loading, derived URLs and keys, and identity checks.
+- `internal/site/apidoc.go`: exported module-root API and GoDoc extraction; it excludes `internal` code.
+- `internal/site`: SEO/PWA generation, template rendering, artifact validation, preview, and tests.
+- `site/templates`: shared layout and navigation plus crawlable home, examples, and API pages.
+- `site/assets/css` and `site/assets/js`: small Bootstrap-variable styling and shared browser behavior.
+- `site/assets/vendor`: website-only Bootstrap 5.3.8 assets with notices under `guides/`.
+- `site/assets/icons`: source favicon, PWA, maskable, Apple-touch, and Open Graph images.
+- `dist/pages`: generated Pages artifact; it is ignored and produced in CI.
+- `.github/workflows/ci.yml`: package, example, site generation, and artifact quality gates.
+- `.github/workflows/pages.yml`: validated `dist/pages` upload and GitHub Pages deployment.
 
-```go
-func Convert(headers []string, data []map[string]interface{}) (string, error)
-```
+## Stable Pages contract
 
-Consumers import `github.com/tzfqh/gmdtable` and call `gmdtable.Convert`. There is no application startup sequence. A call follows this path:
+Keep real static pages at `index.html`, `examples/index.html`, and `api/index.html`, deployed below
+`/gmdtable/`. All internal links, assets, manifest entries, service-worker paths, and preview routes
+must remain repository-subpath-aware.
 
-1. `Convert` rejects an empty `data` slice with `the data slice is empty`.
-2. A `strings.Builder` writes the header row in the order supplied by `headers`.
-3. The function writes one separator cell for each header.
-4. For each map in `data`, it looks up values by iterating over `headers`; map iteration order never controls column order.
-5. `fmt.Sprintf("%v", value)` formats each cell value.
-6. `strings.TrimSpace` removes leading and trailing whitespace from the completed table before the function returns it.
+The examples page reads checked-in Go source. The API page parses actual exported root-package
+declarations and GoDoc; do not manually maintain API declarations or document `internal` packages as
+consumer API. SEO metadata, JSON-LD, `robots.txt`, and `sitemap.xml` derive from `site.config.json`.
 
-Missing map keys resolve to `nil` and are currently formatted as `<nil>`. The implementation does not escape Markdown-sensitive cell content such as pipes or newlines. Treat these details, column ordering, spacing, and the empty-data error as observable behavior when changing the package.
+Each new public page requires crawlable initial HTML, semantic landmarks, exactly one descriptive
+`h1`, keyboard-accessible controls, and accurate unique canonical and Open Graph metadata. Preserve
+visible focus indicators and accessible mobile navigation.
 
-## Configuration
+## Theme, SEO, and PWA behavior
 
-- `go.mod` is the authoritative module configuration. Preserve the module path unless a migration is explicitly planned, and keep code compatible with its declared `go 1.19` version.
-- `.github/workflows/test.yml` is the authoritative continuous integration pipeline. It uses Go 1.19 on `ubuntu-latest` and runs for pushes to every branch.
-- `.vscode/settings.json` affects only local editor presentation. Do not make builds or tests depend on VS Code settings.
-- The package has no environment variables or runtime configuration files.
+The shared theme control supports exactly `system`, `light`, and `dark` through Bootstrap color
+modes. Keep theme and cache keys target-specific. Persist explicit theme preferences, respond to
+system-theme changes, synchronize `theme-color`, and retain safe storage failure handling.
 
-## Build and validation pipeline
+The generated service worker is optional website behavior. It handles only same-origin GET requests
+within `/gmdtable/`, uses network-first HTML and cache-first local assets, bounds runtime entries, and
+cleans only `gmdtable` caches. Ordinary non-production file viewing must not register it.
 
-Run the same core checks locally that CI runs:
+## Commands and generated files
+
+Run from the repository root:
 
 ```bash
-go mod download
-go build -v ./...
-go test -v ./...
+gofmt -w .
+go mod tidy
+go test ./...
+go test -race ./...
+go vet ./...
+go build ./...
+go list ./...
+go list ./... | xargs -n 1 go doc
+go run ./examples/basic
+go run ./cmd/sitegen build
+go run ./cmd/sitegen validate
+go run ./cmd/sitegen preview
 ```
 
-Before those checks, format changed Go files:
+`preview` rebuilds and validates before serving `http://127.0.0.1:4173/gmdtable/`. Stop the server
+after verification.
 
-```bash
-gofmt -w gmdtable.go gmdtable_test.go
-```
+Generated Pages files must not be edited manually. Change package GoDoc, configuration, templates,
+assets, or generator code and rebuild. `dist/pages` should be generated in CI and not committed.
 
-`go build` validates the library but does not produce a committed application binary. Do not add generated binaries or test artifacts to the repository.
+## Change discipline
 
-## Data flow and component boundaries
+Keep `site.config.json` synchronized with `go.mod` where values intentionally mirror each other. Add
+deterministic tests for new configuration, route, metadata, theme, cache, scope, extraction, or
+validation behavior. Keep all checks independent of external network services.
 
-```text
-Consumer
-  │ headers []string + data []map[string]interface{}
-  ▼
-Convert
-  ├── validates that data is nonempty
-  ├── uses headers as the column schema and ordering
-  ├── reads each row map by header key
-  └── formats values into a strings.Builder
-  ▼
-Markdown table string or error
-```
-
-All transformation happens synchronously in `Convert`. The function does not mutate the input slices or maps, perform I/O, retain state, or call external services. Tests should exercise the public function directly rather than reproduce its formatting algorithm.
-
-## Make changes safely
-
-- Keep the public API small and backward compatible. Coordinate changes to the signature or output format across implementation, tests, and `README.md`.
-- Add table-driven tests for new cases, especially ordering, value formatting, whitespace, missing keys, and error behavior.
-- Compare exact strings when testing Markdown output so spacing and separators remain intentional.
-- Add dependencies only when the standard library cannot meet a demonstrated requirement. Run `go mod tidy` after changing imports and commit any resulting module metadata.
-- Update the CI workflow only when build requirements change, and keep its Go version aligned with `go.mod`.
-- Run `gofmt`, `go build -v ./...`, and `go test -v ./...` before submitting a change.
+Do not add Node.js for site generation. Do not import Bootstrap or site tooling into the public Go
+package. Preserve third-party license notices. Do not publish releases or tags unless explicitly
+requested.

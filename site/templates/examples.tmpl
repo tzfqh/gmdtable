@@ -1,0 +1,55 @@
+{{define "content"}}<main id="main-content">
+  <section class="section-space border-bottom" aria-labelledby="examples-title">
+    <div class="container">
+      <p class="eyebrow">Compiled, executable documentation</p>
+      <h1 id="examples-title">Go Markdown table examples</h1>
+      <p class="lead col-lg-9">These listings come directly from checked-in Go source. Run them locally to exercise <code>{{.API.ImportPath}}</code>; the website does not reimplement the package in the browser or send code to a remote execution service.</p>
+      <div class="d-flex flex-wrap gap-2 mt-4">
+        <a class="btn btn-primary" href="#basic-example">Basic command</a>
+        <a class="btn btn-outline-secondary" href="#example-test">Example test</a>
+        <a class="btn btn-link" href="{{.Config.AssetURL "api/"}}">Read the API reference</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="basic-example" class="section-space" aria-labelledby="basic-title">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <h2 id="basic-title">Run the basic command</h2>
+          <p>The generator reads this listing from <code>examples/basic/main.go</code>. It supplies ordered headers and one row to the public <code>Convert</code> function.</p>
+          <div class="code-panel"><pre><code>go run ./examples/basic</code></pre><p class="mb-1 text-body-secondary">Expected output</p><pre class="mb-0"><code>| Name | Language |
+| ------------ | ------------ |
+| gmdtable | Go |</code></pre></div>
+          <p class="mt-3 mb-0"><a href="{{.Config.RepositoryURL}}/blob/main/examples/basic/main.go">Open the basic example source on GitHub</a></p>
+        </div>
+        <div class="col-lg-8"><div class="code-panel"><pre class="mb-0"><code>{{.BasicExample}}</code></pre></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="example-test" class="section-space bg-body-tertiary border-top border-bottom" aria-labelledby="test-title">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <h2 id="test-title">Use an example test</h2>
+          <p>The source-derived <code>ExampleConvert</code> function is compiled, and its output comment is checked by <code>go test ./...</code>. This keeps the example synchronized with the public API and exact Markdown output.</p>
+          <div class="code-panel"><pre class="mb-0"><code>go test ./...</code></pre></div>
+          <p class="mt-3 mb-0"><a href="{{.Config.RepositoryURL}}/blob/main/example_test.go">Open the example test source on GitHub</a></p>
+        </div>
+        <div class="col-lg-8"><div class="code-panel"><pre class="mb-0"><code>{{.ExampleTest}}</code></pre></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-space" aria-labelledby="next-title">
+    <div class="container">
+      <h2 id="next-title">Extend the example safely</h2>
+      <div class="row g-4">
+        <article class="col-md-4"><h3 class="h5">Add columns</h3><p>Append header names in the required order and add matching keys to each row map.</p></article>
+        <article class="col-md-4"><h3 class="h5">Handle errors</h3><p>Check the returned error when the headers or data may be empty, before using the generated table.</p></article>
+        <article class="col-md-4"><h3 class="h5">Review exact behavior</h3><p>The <a href="{{.Config.AssetURL "api/"}}">generated API documentation</a> reflects the current exported declaration and GoDoc comment.</p></article>
+      </div>
+    </div>
+  </section>
+</main>{{end}}

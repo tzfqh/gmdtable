@@ -1,0 +1,73 @@
+{
+  "packageName": "gmdtable",
+  "displayName": "gmdtable",
+  "modulePath": "github.com/tzfqh/gmdtable",
+  "description": "gmdtable converts ordered Go map data into Markdown tables with a small standard-library API.",
+  "repository": {
+    "owner": "tzfqh",
+    "name": "gmdtable"
+  },
+  "pwa": {
+    "shortName": "gmdtable"
+  },
+  "goVersion": "1.19",
+  "license": "MIT",
+  "icons": {
+    "favicon": "gmdtable-mark-32x32.png",
+    "icon192": "gmdtable-mark-192x192.png",
+    "icon512": "gmdtable-mark-512x512.png",
+    "maskableIcon512": "gmdtable-mark-maskable-512x512.png",
+    "appleTouchIcon": "gmdtable-mark-192x192.png",
+    "openGraphImage": "gmdtable-open-graph-1200x630.png"
+  },
+  "theme": {
+    "colorLight": "#ffffff",
+    "colorDark": "#141414",
+    "primary": {
+      "light": {
+        "base": "#4d8ffb",
+        "hover": "#256fd8",
+        "active": "#185aaa",
+        "soft": "#eaf2ff",
+        "rgb": "77, 143, 251",
+        "hoverRgb": "37, 111, 216",
+        "activeRgb": "24, 90, 170"
+      },
+      "dark": {
+        "base": "#5089e8",
+        "hover": "#6198ee",
+        "active": "#74a5f3",
+        "soft": "#1b3155",
+        "rgb": "80, 137, 232",
+        "hoverRgb": "97, 152, 238",
+        "activeRgb": "116, 165, 243"
+      }
+    }
+  },
+  "pages": [
+    {
+      "name": "home",
+      "outputPath": "index.html",
+      "path": "",
+      "title": "gmdtable | Go Markdown table generator",
+      "description": "gmdtable converts ordered Go map data into Markdown tables with a small standard-library API.",
+      "schemaType": "SoftwareSourceCode"
+    },
+    {
+      "name": "examples",
+      "outputPath": "examples/index.html",
+      "path": "examples/",
+      "title": "Go Markdown table examples | gmdtable",
+      "description": "Run gmdtable examples generated from checked-in Go source and verify exact Markdown table output.",
+      "schemaType": "TechArticle"
+    },
+    {
+      "name": "api",
+      "outputPath": "api/index.html",
+      "path": "api/",
+      "title": "Go API reference | gmdtable",
+      "description": "Browse source-derived Go API documentation for the gmdtable Convert function and its behavior.",
+      "schemaType": "TechArticle"
+    }
+  ]
+}

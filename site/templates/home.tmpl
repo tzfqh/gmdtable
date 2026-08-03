@@ -1,0 +1,85 @@
+{{define "content"}}<main id="main-content">
+  <section class="hero-section border-bottom">
+    <div class="container py-5 py-lg-6">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <p class="eyebrow">Go Markdown table generator</p>
+          <h1 class="display-4 fw-bold">{{.Config.DisplayName}}</h1>
+          <p class="lead">{{.Config.Description}}</p>
+          <div class="d-flex flex-column align-items-start gap-2 mt-4">
+            <div class="d-flex flex-wrap gap-2">
+              <a class="btn btn-primary btn-lg" href="{{.Config.AssetURL "examples/"}}">Read the examples</a>
+              <a class="btn btn-outline-secondary btn-lg" href="{{.Config.AssetURL "api/"}}">Read the API reference</a>
+            </div>
+            <a class="btn btn-link btn-lg px-0" href="{{.Config.RepositoryURL}}">View source on GitHub</a>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="code-panel" aria-label="Installation command">
+            <div class="d-flex justify-content-between align-items-center mb-2"><span class="small text-body-secondary">Install</span><button class="btn btn-sm btn-outline-secondary" type="button" data-copy-target="#install-command">Copy</button></div>
+            <pre class="mb-0"><code id="install-command">go get {{.Config.ModulePath}}</code></pre>
+            <p class="copy-status mb-0 mt-2" role="status" aria-live="polite" data-copy-status></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="install" class="section-space" aria-labelledby="install-title">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-5">
+          <h2 id="install-title">Install the package</h2>
+          <p>Use Go {{.Config.GoVersion}} or later. The public package lives at the module root and uses only the Go standard library at runtime.</p>
+        </div>
+        <div class="col-lg-7"><div class="code-panel"><pre><code>go get {{.Config.ModulePath}}</code></pre><pre class="mb-0"><code>import {{.Config.PackageName}} "{{.Config.ModulePath}}"</code></pre></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="usage" class="section-space bg-body-tertiary border-top border-bottom" aria-labelledby="usage-title">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-5">
+          <h2 id="usage-title">Generate a Markdown table</h2>
+          <p>Pass headers in the required column order, then provide one map for each row. <code>Convert</code> reads every map using the header keys and formats values with Go's default representation.</p>
+          <a href="{{.Config.RepositoryURL}}/tree/main/examples/basic">Open the complete basic example</a>
+        </div>
+        <div class="col-lg-7"><div class="code-panel"><pre class="mb-0"><code>headers := []string{"Name", "Language"}
+data := []map[string]interface{}{
+    {"Name": "gmdtable", "Language": "Go"},
+}
+
+table, err := gmdtable.Convert(headers, data)
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println(table)</code></pre></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-space" aria-labelledby="capabilities-title">
+    <div class="container">
+      <div class="mb-4"><h2 id="capabilities-title">Verified package behavior</h2><p class="text-body-secondary">The implementation and executable tests define these behaviors.</p></div>
+      <div class="row g-4">
+        <article class="col-md-4"><div class="card h-100"><div class="card-body"><h3 class="h5">Ordered columns</h3><p class="mb-0">The header slice controls both the table schema and column order, independent of map iteration order.</p></div></div></article>
+        <article class="col-md-4"><div class="card h-100"><div class="card-body"><h3 class="h5">Table-safe cells</h3><p class="mb-0">Rows accept <code>map[string]interface{}</code> values, use <code>fmt</code>'s default formatting, and escape structural cell content.</p></div></div></article>
+        <article class="col-md-4"><div class="card h-100"><div class="card-body"><h3 class="h5">Explicit input errors</h3><p class="mb-0"><code>Convert</code> returns an error when the headers or data slice is empty.</p></div></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-space bg-body-tertiary border-top" aria-labelledby="resources-title">
+    <div class="container">
+      <h2 id="resources-title">Package resources</h2>
+      <p>Use source-derived documentation to verify the package contract before changing output formatting.</p>
+      <div class="list-group list-group-horizontal-lg">
+        <a class="list-group-item list-group-item-action" href="{{.Config.AssetURL "examples/"}}"><strong>Examples</strong><br><span class="text-body-secondary">Run checked-in consumer code.</span></a>
+        <a class="list-group-item list-group-item-action" href="{{.Config.AssetURL "api/"}}#api-convert"><strong>Convert API</strong><br><span class="text-body-secondary">Read the generated declaration and GoDoc.</span></a>
+        <a class="list-group-item list-group-item-action" href="https://pkg.go.dev/{{.Config.ModulePath}}"><strong>pkg.go.dev</strong><br><span class="text-body-secondary">Open the Go package index.</span></a>
+      </div>
+      <p class="mt-4 mb-0">Requires Go {{.Config.GoVersion}} or later and is available under the {{.Config.License}} License.</p>
+    </div>
+  </section>
+</main>{{end}}
