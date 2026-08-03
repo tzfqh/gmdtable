@@ -1,8 +1,7 @@
 # gmdtable
 
 `gmdtable` converts ordered Go map data into Markdown tables. The module-root package has one public
-function, uses only the Go standard library at runtime, and preserves the header slice as the table's
-column order.
+function and preserves the header slice as the table's column order.
 
 ## Install
 
@@ -34,14 +33,15 @@ fmt.Println(table)
 The example prints:
 
 ```markdown
-| Name | Language |
-| ------------ | ------------ |
-| gmdtable | Go |
+| Name     | Language |
+| :------- | :------- |
+| gmdtable | Go       |
 ```
 
 `Convert` returns an error when `headers` or `data` is empty. Values use `fmt`'s default formatting,
 missing keys render as `<nil>`, and structural pipes, backslashes, and line breaks are escaped so the
-content remains in its cell.
+content remains in its cell. Each column is padded to its widest cell, and its left-aligned separator
+uses the same width with at least three hyphens.
 
 Run the complete example with `go run ./examples/basic`.
 

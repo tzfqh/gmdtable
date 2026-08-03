@@ -14,7 +14,7 @@ func TestConvert(t *testing.T) {
 		{"title1": "value1", "title2": 123},
 		{"title1": "value2", "title2": 456},
 	}
-	want := "| title1 | title2 |\n| ------------ | ------------ |\n| value1 | 123 |\n| value2 | 456 |"
+	want := "| title1 | title2 |\n| :----- | :----- |\n| value1 | 123    |\n| value2 | 456    |"
 
 	got, err := gmdtable.Convert(headers, data)
 	if err != nil {
@@ -30,7 +30,7 @@ func TestConvertUsesHeaderOrderAndFormatsMissingValues(t *testing.T) {
 
 	headers := []string{"second", "missing", "first"}
 	data := []map[string]interface{}{{"first": 1, "second": true}}
-	want := "| second | missing | first |\n| ------------ | ------------ | ------------ |\n| true | <nil> | 1 |"
+	want := "| second | missing | first |\n| :----- | :------ | :---- |\n| true   | <nil>   | 1     |"
 
 	got, err := gmdtable.Convert(headers, data)
 	if err != nil {
@@ -70,7 +70,41 @@ func TestConvertEscapesStructuralCellContent(t *testing.T) {
 
 	headers := []string{`Name|Path`}
 	data := []map[string]interface{}{{"Name|Path": "first line\r\nsecond | C:\\table"}}
-	want := "| Name\\|Path |\n| ------------ |\n| first line<br>second \\| C:\\\\table |"
+	want := "| Name\\|Path                        |\n| :-------------------------------- |\n| first line<br>second \\| C:\\\\table |"
+
+	got, err := gmdtable.Convert(headers, data)
+	if err != nil {
+		t.Fatalf("Convert returned an unexpected error: %v", err)
+	}
+	if got != want {
+		t.Fatalf("Convert() = %q, want %q", got, want)
+	}
+}
+
+func TestConvertUsesMinimumSeparatorWidth(t *testing.T) {
+	t.Parallel()
+
+	want := "| A    |\n| :--- |\n| 1    |"
+
+	got, err := gmdtable.Convert([]string{"A"}, []map[string]interface{}{{"A": 1}})
+	if err != nil {
+		t.Fatalf("Convert returned an unexpected error: %v", err)
+	}
+	if got != want {
+		t.Fatalf("Convert() = %q, want %q", got, want)
+	}
+}
+
+func TestConvertUsesUnicodeDisplayWidth(t *testing.T) {
+	t.Parallel()
+
+	headers := []string{"名称", "Cafe\u0301", "Family"}
+	data := []map[string]interface{}{{
+		"名称":         "gmdtable",
+		"Cafe\u0301": "plain",
+		"Family":     "👨‍👩‍👧‍👦",
+	}}
+	want := "| 名称     | Café  | Family |\n| :------- | :---- | :----- |\n| gmdtable | plain | 👨‍👩‍👧‍👦     |"
 
 	got, err := gmdtable.Convert(headers, data)
 	if err != nil {

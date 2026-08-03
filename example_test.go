@@ -16,7 +16,7 @@ func ExampleConvert() {
 	}
 	fmt.Println(table)
 	// Output:
-	// | Name | Language |
-	// | ------------ | ------------ |
-	// | gmdtable | Go |
+	// | Name     | Language |
+	// | :------- | :------- |
+	// | gmdtable | Go       |
 }

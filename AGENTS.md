@@ -6,7 +6,8 @@ Guidance for automated coding agents working in `gmdtable`.
 
 `gmdtable` is a Go 1.19 module that converts ordered headers and map-backed row data into a Markdown
 table. `go.mod` owns the public module path `github.com/tzfqh/gmdtable`. The module-root `gmdtable`
-package exposes `Convert(headers []string, data []map[string]interface{}) (string, error)`.
+package exposes `Convert(headers []string, data []map[string]interface{}) (string, error)` and uses
+`go-runewidth` for Unicode-aware column sizing.
 
 Preserve header-defined column order, default `fmt` value formatting, exact Markdown spacing, the
 `<nil>` representation for missing keys, structural cell escaping, and empty-input errors unless a

@@ -3,13 +3,16 @@ package gmdtable
 import (
 	"fmt"
 	"strings"
+
+	"github.com/mattn/go-runewidth"
 )
 
 // Convert returns a Markdown table containing headers and data.
 //
 // The order of headers determines the column order. Each row is read by header key, and values use
 // fmt's default formatting. Pipes, backslashes, and line breaks are escaped so they remain within
-// their cells. Convert returns an error when headers or data is empty.
+// their cells. Columns are padded to their widest cell. Convert returns an error when headers or
+// data is empty.
 func Convert(headers []string, data []map[string]interface{}) (string, error) {
 	if len(data) == 0 {
 		return "", fmt.Errorf("the data slice is empty")
@@ -18,48 +21,63 @@ func Convert(headers []string, data []map[string]interface{}) (string, error) {
 		return "", fmt.Errorf("the headers slice is empty")
 	}
 
-	var markdownTable strings.Builder
-	var tableStr string
-
-	// Write table headers
-	markdownTable.WriteString("| ")
-	headersLen := len(headers)
-	for headersIndex, title := range headers {
-		title = escapeCell(title)
-		if headersLen == (headersIndex + 1) {
-			markdownTable.WriteString(title + " |")
-		} else {
-			markdownTable.WriteString(title + " | ")
+	rows := make([][]string, len(data)+1)
+	rows[0] = make([]string, len(headers))
+	widths := make([]int, len(headers))
+	for column, header := range headers {
+		rows[0][column] = escapeCell(header)
+		widths[column] = separatorWidth
+		if width := displayWidth(rows[0][column]); width > widths[column] {
+			widths[column] = width
 		}
 	}
-	markdownTable.WriteString("\n")
-
-	// Write separator
-	markdownTable.WriteString("|")
-	for range headers {
-		markdownTable.WriteString(" ------------ |")
-	}
-	markdownTable.WriteString("\n")
-
-	// Write table rows
-	for _, row := range data {
-		markdownTable.WriteString("| ")
-		rowIndex := 0
-		for _, key := range headers {
-			value := escapeCell(fmt.Sprintf("%v", row[key]))
-			if headersLen == (rowIndex + 1) {
-				markdownTable.WriteString(value + " |")
-			} else {
-				markdownTable.WriteString(value + " | ")
+	for rowIndex, dataRow := range data {
+		rows[rowIndex+1] = make([]string, len(headers))
+		for column, key := range headers {
+			value := escapeCell(fmt.Sprintf("%v", dataRow[key]))
+			rows[rowIndex+1][column] = value
+			if width := displayWidth(value); width > widths[column] {
+				widths[column] = width
 			}
-			rowIndex++
 		}
-		markdownTable.WriteString("\n")
 	}
 
-	tableStr = strings.TrimSpace(markdownTable.String())
+	var markdownTable strings.Builder
+	writeRow(&markdownTable, rows[0], widths)
+	markdownTable.WriteByte('\n')
+	markdownTable.WriteString("|")
+	for _, width := range widths {
+		markdownTable.WriteString(" :")
+		markdownTable.WriteString(strings.Repeat("-", width-1))
+		markdownTable.WriteString(" |")
+	}
+	for _, row := range rows[1:] {
+		markdownTable.WriteByte('\n')
+		writeRow(&markdownTable, row, widths)
+	}
 
-	return tableStr, nil
+	return markdownTable.String(), nil
+}
+
+const separatorWidth = 4 // A leading colon followed by Markdown's minimum three hyphens.
+
+var widthCondition = &runewidth.Condition{
+	EastAsianWidth:     false,
+	StrictEmojiNeutral: true,
+}
+
+func writeRow(table *strings.Builder, cells []string, widths []int) {
+	table.WriteString("|")
+	for column, cell := range cells {
+		table.WriteByte(' ')
+		table.WriteString(cell)
+		table.WriteString(strings.Repeat(" ", widths[column]-displayWidth(cell)))
+		table.WriteString(" |")
+	}
+}
+
+func displayWidth(value string) int {
+	return widthCondition.StringWidth(value)
 }
 
 func escapeCell(value string) string {
